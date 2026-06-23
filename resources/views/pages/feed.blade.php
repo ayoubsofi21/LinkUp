@@ -105,8 +105,81 @@
                 <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
             </div>
         </div>
+         
+        <!-- display all post here use foreach loop  -->
+            @foreach($posts as $post)
+                    <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md mb-4">
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img class="w-11 h-11 rounded-xl object-cover" 
+                                    src="{{ $post->user->image_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($post->user->name) }}" 
+                                    alt="{{ $post->user->name }}">
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ $post->user->name }}</h4>
+                                    
+                                    <p class="text-xs text-slate-400 dark:text-slate-400 line-clamp-1">
+                                        {{ $post->user->headline }} 
+                                        @if($post->user->company)
+                                            @ {{ $post->user->company }}
+                                        @endif
+                                    </p>
+                                    
+                                    <p class="text-[11px] text-slate-400 mt-0.5">{{ $post->created_at->diffForHumans() }}</p>
+                                </div>
+                            </div>
 
-        <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
+                            @if(auth()->id() === $post->user_id)
+                                <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce post ?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-2 text-slate-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h10M9 3h6m2 5H7" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
+                        <div class="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed}{{--  --}}">
+                            {{-- Sécurise le texte et conserve les retours à la ligne du textarea --}}
+                            <p>{!! nl2br(e($post->content)) !!}</p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4 text-brand-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 10.333z"/>
+                                </svg> 
+                                <span class="text-brand-500">0</span>
+                            </button>
+                            
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg> 
+                                <span>0 Comments</span>
+                            </button>
+                            
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
+                                </svg> 
+                                <span>Partager</span>
+                            </button>
+                            
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg> 
+                                <span>Enregistrer</span>
+                            </button>
+                        </div>
+                    </div>
+            @endforeach
+
+        <!-- <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md"> 
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                     <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Thomas">
@@ -246,7 +319,7 @@
                 <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
                 <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
             </div>
-        </div>
+         </div> -->
 
     </section>
 
