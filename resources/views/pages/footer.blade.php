@@ -33,7 +33,7 @@
                     <li>
                         <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150">
                             Flux d'actualités
-                        </a>
+                        </a>x1
                     </li>
                     <li>
                         <a href="#" class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150">
