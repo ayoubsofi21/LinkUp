@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TestPost;
 use Illuminate\Http\Request;
-use App\Models\Post;
-class PostController extends Controller
+
+class TestPostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $posts=Post::all();
+        $posts=TestPost::latest()->get();
         return view("pages.feed",compact("posts"));
     }
 
@@ -20,18 +21,25 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-   
+    public function store(Request $request)
+    {
+        $validate=$request->validate(
+            ["description"=>'required|min:5']
+        );
+        TestPost::create($validate) ;       
+        return redirect()->back()->with('success',"post created with successfull");
+    }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(TestPost $testPost)
     {
         //
     }
@@ -39,16 +47,15 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(TestPost $testPost)
     {
-        $post=Post::findOrFail($id);
-        return view('posts.edit',compact('post'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, TestPost $testPost)
     {
         //
     }
@@ -56,11 +63,8 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(TestPost $testPost)
     {
-        $post=Post::findOrFail($id);
-        $post->delete();
-        return redirect()->route('posts.index')->with('success','post deleted successfully !');
-
+        //
     }
 }

@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/',[PostController::class,'index']);
-Route::resource('posts',PostController::class);
+use App\Http\Controllers\TestPostController;
+
+Route::get('/',[TestPostController::class,'index']);
+Route::post('/posts/store',[TestPostController::class,'store'])->name('posts.store');
+// Route::resource('posts',PostController::class);
