@@ -11,9 +11,21 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts=Post::all();
+        // $posts=Post::all();
+        $posts = Post::withCount('comments')
+             ->latest()
+             ->get();
         return view("pages.feed",compact("posts"));
     }
+     public function store(Request $request)
+    {
+        $validate=$request->validate(
+            ["description"=>'required|min:5']
+        );
+        Post::create($validate) ;       
+        return redirect()->back()->with('success',"post created with successfull");
+    }
+
 
     /**
      * Show the form for creating a new resource.

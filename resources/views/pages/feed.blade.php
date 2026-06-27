@@ -70,7 +70,7 @@
             </div>
         @endsession
         <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 shadow-sm">
-    <form action="{{ route('posts.store') }}" method="POST">
+    <form action="#" method="POST">
         @csrf
 
         <div class="flex items-start gap-3">
@@ -135,7 +135,7 @@
          
         <!-- display all post here use foreach loop  -->
         
-                    @foreach($posts as $post)
+                    <!-- @foreach($posts as $post)
 
                     <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm mb-4">
 
@@ -166,11 +166,114 @@
                             {!! nl2br(e($post->description)) !!}
                         </p>
 
+                    </div> 
+
+                    @endforeach -->
+                <!-- display post and can comment also  .... -->
+
+                    @foreach($posts as $post)
+                    <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm mb-4">
+
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img
+                                    class="w-11 h-11 rounded-xl object-cover"
+                                    src="https://i.pravatar.cc/150?u={{ $post->id }}"
+                                    alt="{{ $post->description }}">
+
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white hover:text-brand-500 cursor-pointer transition-colors">
+                                        {{ $post->description }}
+                                    </h4>
+
+                                    <p class="text-xs text-slate-400 dark:text-slate-400 line-clamp-1">
+                                        Post Author
+                                    </p>
+
+                                    <p class="text-[11px] text-slate-400 mt-0.5">
+                                        {{ $post->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="space-y-3 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            <p>
+                                {!! nl2br(e($post->description)) !!}
+                            </p>
+
+                            @if($post->image)
+                                <div class="pt-2">
+                                    <img
+                                        class="w-full h-64 object-cover rounded-xl border border-slate-100 dark:border-slate-800 shadow-inner"
+                                        src="{{ asset('storage/' . $post->image) }}"
+                                        alt="Post Image">
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400">
+
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
+                                </svg>
+                                <span>0</span>
+                            </button>
+                            <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
+                                @csrf
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+
+                                <span>    {{ $post->comments_count }}</span>
+                                <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                    Comments
+                                </button>
+                            </form>
+
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
+                                </svg>
+                                <span>Share</span>
+                            </button>
+
+                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-slate-800">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                                <span>Save</span>
+                            </button>
+
+                        </div>
+
                     </div>
-
                     @endforeach
+                
+                    <!-- /////////////////////////////////////////////////// -->
 
-        <!-- <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md"> 
+
+
+
+
+
+     
+                    <!-- <div class="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md"> 
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                     <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Thomas">

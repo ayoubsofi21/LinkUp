@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TestPost;
+// use App\Models\TestPost;
 use Illuminate\Http\Request;
 
 class TestPostController extends Controller
@@ -12,8 +12,8 @@ class TestPostController extends Controller
      */
     public function index()
     {
-        $posts=TestPost::latest()->get();
-        return view("pages.feed",compact("posts"));
+        // $posts=TestPost::latest()->get();
+        // return view("pages.feed");
     }
 
     /**
