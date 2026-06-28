@@ -10,11 +10,15 @@
             
             <div class="px-6 pb-6 text-center relative">
                 <div class="absolute left-1/2 transform -translate-x-1/2 -top-10">
-                    <img class="w-20 h-20 rounded-2xl object-cover ring-4 ring-white shadow-md" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80" alt="Avatar">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 ring-4 ring-white shadow-md flex items-center justify-center">
+                        <span class="text-3xl font-bold text-white">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                        </span>
+                    </div>
                 </div>
                 
                 <div class="pt-12">
-                    <h2 class="text-lg font-bold text-slate-900 tracking-tight">Sara</h2>
+                    <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ auth()->user()->name }}</h2>
                     <p class="text-xs text-brand-500 font-medium mt-0.5">Senior Frontend Engineer</p>
                     <p class="text-xs text-slate-400 mt-2">Spécialisé en écosystèmes UI Modernes (Tailwind, React, Blade)</p>
                 </div>
