@@ -1,17 +1,36 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TestPostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ProfileController;
 
 
-Route::get('/',[PostController::class,'index']);
+Route::get('/', function () {
+    return view('welcome');
+});
 
-// Route::get('/',[PostController::class,'store'])->name('posts.store');
-// Route::post('/posts/store',[TestPostController::class,'store'])->name('posts.store');
-// Route::resource('posts',PostController::class);
-// show the comment form for can add comment to a specific post
-Route::post('/comments/create/{id}', [CommentController::class, 'create'])->name('comments.create');
-Route::post('/comments/store/{id}', [CommentController::class, 'store'])->name('comments.store');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/feed', [PostController::class, 'index'])->name('feed');
+
+    Route::post('/comments/create/{id}', [CommentController::class, 'create'])->name('comments.create');
+    Route::post('/comments/store/{id}', [CommentController::class, 'store'])->name('comments.store');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
 
