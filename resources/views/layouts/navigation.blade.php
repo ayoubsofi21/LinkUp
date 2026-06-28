@@ -11,21 +11,20 @@
             <!-- Left Side -->
             <div class="flex items-center flex-1 max-w-md gap-4">
                 <!-- Logo -->
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                <a href="{{ route('feed') }}" class="flex items-center gap-3 group">
                     <!-- Logo Icon Container -->
-                    <div
-                        class="flex h-11 w-11 items-center justify-center
-                            rounded-2xl
-                            bg-gradient-to-br from-brand-500 to-sky-400
-                            shadow-lg shadow-brand-500/20
-                            transition-all duration-300
-                            group-hover:scale-105
-                            group-hover:shadow-xl
-                            group-hover:shadow-brand-500/30">
-                        <span class="text-lg font-extrabold tracking-tight text-white">
-                            Lp
-                        </span>
-                    </div>
+               <div
+                    class="flex h-11 w-11 items-center justify-center
+                        rounded-2xl overflow-hidden
+                        shadow-lg shadow-brand-500/20
+                        transition-all duration-300
+                        group-hover:scale-105">
+
+                    <img
+                        src="{{ asset('images/linkup-logo.png') }}"
+                        alt="LinkUp Logo"
+                        class="w-full h-full object-cover">
+                </div>
                     <!-- Brand Name -->
                     <div class="hidden sm:flex flex-col leading-none">
                         <span
