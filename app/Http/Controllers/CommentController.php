@@ -45,7 +45,7 @@ class CommentController extends Controller
             'post_id' => $validated['post_id'],
             'user_id' =>1,
         ]);
-        return redirect('/')->with("success","Comment added successfully");
+        return redirect('/feed')->with("success","Comment added successfully");
     }
 
     /**
