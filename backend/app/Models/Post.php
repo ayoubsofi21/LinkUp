@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Post extends Model {
     use HasFactory, Notifiable;
-    protected $fillable = ['user_id', 'content'];
+    protected $fillable = ['content','user_id'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
