@@ -73,55 +73,68 @@
                 {{ $value }}
             </div>
         @endsession
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
-    <form action="#" method="POST">
-        @csrf
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm mb-6">
+            <form action="#" method="POST" enctype="multipart/form-data">
+                @csrf
 
-        <div class="flex items-start gap-3">
-            <img
-                class="h-10 w-10 rounded-xl object-cover mt-1"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80"
-                alt="Avatar"
-            >
+                <div class="flex items-center gap-3 mb-4">
+                    <img class="w-11 h-11 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}" alt="Avatar">
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-900">{{ auth()->user()->name }}</h4>
+                        <p class="text-xs text-slate-400">Share something with your network</p>
+                    </div>
+                </div>
 
-            <div class="flex-1">
-                <textarea
-                    name="description"
-                    rows="2"
-                    placeholder="Partagez vos réalisations ou posez une question..."
-                    class="w-full resize-none border-none bg-transparent focus:ring-0 text-sm p-2 text-slate-800 placeholder-slate-400"
-                ></textarea>
-            </div>
+                <div class="mb-4">
+                    <textarea 
+                        name="description" 
+                        rows="3" 
+                        placeholder="What's on your mind?"
+                        class="w-full text-base text-slate-700 placeholder-slate-400 bg-transparent border-none focus:ring-0 p-0 resize-none"
+                    ></textarea>
+                </div>
+
+                <div id="preview-container" class="hidden relative mb-4 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                    <img id="image-preview" src="#" class="w-full object-cover max-h-[400px]">
+                    <button type="button" onclick="clearSelectedImage()" class="absolute top-3 right-3 bg-rose-600 text-white p-2 rounded-full shadow hover:bg-rose-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                    
+                    <label class="flex items-center gap-2 cursor-pointer p-2 rounded-xl text-slate-400 hover:text-brand-500 hover:bg-slate-50 transition-colors">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="text-sm font-semibold text-slate-700">Photo</span>
+                        <input type="file" name="image" id="image-input" accept="image/*" class="hidden" onchange="previewImage(this)">
+                    </label>
+
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow transition-colors">
+                        Publish
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-slate-100">
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('image-preview').src = e.target.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-            <div class="flex gap-2">
-                <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-brand-500">
-                    Média
-                </button>
-
-                <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-amber-500">
-                    Événement
-                </button>
-
-                <button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-500 hover:text-indigo-500">
-                    Rédiger
-                </button>
-            </div>
-
-            <button
-                type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-                Publier
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
+function clearSelectedImage() {
+    document.getElementById('image-input').value = "";
+    document.getElementById('preview-container').classList.add('hidden');
+}
+</script>
 
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4 animate-pulse opacity-60">
             <div class="flex items-center gap-3">
