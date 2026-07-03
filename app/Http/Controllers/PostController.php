@@ -105,11 +105,17 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
-        $post=Post::findOrFail($id);
-        $post->delete();
-        return redirect()->route('posts.index')->with('success','post deleted successfully !');
+  
 
-    }
+public function destroy(string $id)
+{
+    // 1. Trouver l'article
+    $post = Post::findOrFail($id);
+    // 2. Vérifier le droit de supprimer (Laravel 12)
+    Gate::authorize('delete', $post);
+    // 3. Supprimer de la base de données
+    $post->delete();
+    // 4. Retourner à la liste
+    return redirect()->route('feed');
+}
 }
