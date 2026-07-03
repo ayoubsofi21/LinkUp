@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
     <aside class="lg:col-span-3 space-y-6 lg:sticky lg:top-24">
@@ -187,143 +188,138 @@ function clearSelectedImage() {
                     @endforeach -->
                 <!-- display post and can comment also  .... -->
 
-                    @foreach($posts as $post)
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
+        @foreach($posts as $post)
+<div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
 
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img
-                        class="w-11 h-11 rounded-xl object-cover"
-                        src="https://i.pravatar.cc/150?u={{ $post->id }}"
-                        alt="{{ $post->content }}">
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+            <img
+                class="w-11 h-11 rounded-xl object-cover"
+                src="https://i.pravatar.cc/150?u={{ $post->id }}"
+                alt="{{ $post->content }}">
 
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
-                            {{ $post->content }}
-                        </h4>
+            <div>
+                <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
+                    {{ $post->content }}
+                </h4>
 
-                        <p class="text-xs text-slate-400 line-clamp-1">
-                            Post Author
-                        </p>
+                <p class="text-xs text-slate-400 line-clamp-1">
+                    Post Author
+                </p>
 
-                        <p class="text-[11px] text-slate-400 mt-0.5">
-                            {{ $post->created_at->diffForHumans() }}
-                        </p>
+                <p class="text-[11px] text-slate-400 mt-0.5">
+                    {{ $post->created_at->diffForHumans() }}
+                </p>
+            </div>
+        </div>
+
+        @if(Auth::user() && (Auth::user()->can('update', $post) || Auth::user()->can('delete', $post)))
+            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" type="button" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-50 focus:outline-none">
+                    :
+                </button>
+
+                <div 
+                    x-show="open"
+                    x-transition:enter="transition ease-out duration-100"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-75"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="absolute right-0 mt-1 w-40 bg-white border border-slate-200 shadow-xl rounded-xl z-50 overflow-hidden"
+                >
+                    <div class="py-1">
+                        @can('update', $post)
+                            <a href="{{ route('posts.edit', $post) }}" class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                                <svg class="w-4 h-4 mr-2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                                Edit Post
+                            </a>
+                        @endcan
+
+                        @can('delete', $post)
+                            <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left w-full">
+                                    <svg class="w-4 h-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Delete Post
+                                </button>
+                            </form>
+                        @endcan
                     </div>
                 </div>
-
-                @if(Auth::user() && (Auth::user()->can('update', $post) || Auth::user()->can('delete', $post)))
-                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" type="button" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-50 focus:outline-none">
-                            :
-                        </button>
-
-                        <div 
-                            x-show="open"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 mt-1 w-40 bg-white border border-slate-200 shadow-xl rounded-xl z-50 overflow-hidden"
-                            style="display: none;"
-                        >
-                            <div class="py-1">
-                                @can('update', $post)
-                                    <a href="{{ route('posts.edit', $post) }}" class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
-                                        <svg class="w-4 h-4 mr-2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                        </svg>
-                                        Edit Post
-                                    </a>
-                                @endcan
-
-                                @can('delete', $post)
-                                    <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
-                                            <svg class="w-4 h-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            Delete Post
-                                        </button>
-                                    </form>
-                                @endcan
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <button type="button" class="p-2 text-slate-500">
-                        <svg xmlns="http://w3.org" viewBox="0 0 100 100" width="30" height="30">
-                        <!-- Point supérieur -->
-                        <circle cx="50" cy="40" r="5" fill="currentColor" />
-                        <!-- Point inférieur -->
-                        <circle cx="50" cy="70" r="5" fill="currentColor" />
-                        </svg>
-                    </button>
-                @endif
             </div>
+        @else
+            <button type="button" class="p-2 text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30">
+                    <circle cx="50" cy="40" r="5" fill="currentColor" />
+                    <circle cx="50" cy="70" r="5" fill="currentColor" />
+                </svg>
+            </button>
+        @endif
+    </div>
 
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>
-                    {!! nl2br(e($post->content)) !!}
-                </p>
-               @if($post->image)
-                    <img
-                        src="{{ str_starts_with($post->image, 'http')
-                            ? $post->image
-                            : asset('storage/' . $post->image) }}"
-                        alt="Post image"
-                        class="w-full h-64 object-cover rounded-xl"
-                    >
-                @endif
-            </div>
+    <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
+        <p>
+            {!! nl2br(e($post->content)) !!}
+        </p>
+        @if($post->image)
+            <img
+                src="{{ str_starts_with($post->image, 'http') ? $post->image : asset('storage/'. $post->image) }}"
+                alt="Post image"
+                class="w-full h-64 object-cover rounded-xl"
+            >
+        @endif
+    </div>
 
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+    <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
 
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
-                    </svg>
-                    <span>0</span>
-                </button>
-                
-                <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
-                    @csrf
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
+        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
+            </svg>
+            <span>0</span>
+        </button>
+        
+        <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
+            @csrf
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
 
-                    <span>    {{ $post->comments_count }}</span>
-                    <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                        Comments
-                    </button>
-                </form>
+            <span>    {{ $post->comments_count }}</span>
+            <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+                Comments
+            </button>
+        </form>
 
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
-                    </svg>
-                    <span>Share</span>
-                </button>
+        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
+            </svg>
+            <span>Share</span>
+        </button>
 
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                    </svg>
-                    <span>Save</span>
-                </button>
+        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+            <span>Save</span>
+        </button>
 
-            </div>
+    </div>
 
-        </div>
-        @endforeach
+</div>
+@endforeach
     </section>
 
     <aside class="lg:col-span-3 space-y-6 lg:sticky lg:top-24 hidden lg:block">
