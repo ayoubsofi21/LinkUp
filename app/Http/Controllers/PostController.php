@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage; // Pour gérer la suppression d'image
+use Illuminate\Support\Facades\Gate;
 class PostController extends Controller
 {
     /**
@@ -69,9 +71,35 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, string $id)
     {
-        //
+        // 1. Trouver l'article ou renvoyer une erreur 404 si l'ID n'existe pas
+        $post = Post::findOrFail($id);
+        // À la place de $this->authorize('update', $post);
+        Gate::authorize('update', $post);
+        // Ou si vous utilisez Laravel 11/12 : Gate::authorize('update', $post);
+        // 3. Valider les données reçues
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image de 2 Mo max
+        ]);
+        // 4. Gérer le changement d'image
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image du stockage (si elle existe et n'est pas une URL de test)
+            if ($post->image && !str_starts_with($post->image, 'http')) {
+                Storage::disk('public')->delete($post->image);
+            }
+            // Enregistrer la nouvelle image dans le dossier "posts"
+            $path = $request->file('image')->store('posts', 'public');
+            $post->image = $path;
+        }
+
+        // 5. Mettre à jour le texte et sauvegarder
+        $post->content = $validated['content'];
+        $post->save();
+        // 6. Rediriger l'utilisateur
+        return redirect()->route('feed')->with('success', 'Article modifié avec succès !');
     }
 
     /**
