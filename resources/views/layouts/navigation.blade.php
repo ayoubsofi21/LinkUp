@@ -78,7 +78,7 @@
             <div class="hidden lg:flex items-center gap-1">
                 <!-- Dashboard (Active State) -->
                 <a
-                    href="{{ route('dashboard') }}"
+                    href="{{ route('feed') }}"
                     class="flex flex-col items-center justify-center w-16 h-14 text-brand-500 dark:text-brand-400 border-b-2 border-brand-500 dark:border-brand-400">
                     <svg
                         class="h-5 w-5"

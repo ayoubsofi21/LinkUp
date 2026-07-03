@@ -74,7 +74,7 @@
             </div>
         @endsession
         <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm mb-6">
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{route('posts.store')}}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="flex items-center gap-3 mb-4">
@@ -87,7 +87,7 @@
 
                 <div class="mb-4">
                     <textarea 
-                        name="description" 
+                        name="content" 
                         rows="3" 
                         placeholder="What's on your mind?"
                         class="w-full text-base text-slate-700 placeholder-slate-400 bg-transparent border-none focus:ring-0 p-0 resize-none"
@@ -117,7 +117,6 @@
                 </div>
             </form>
         </div>
-
 <script>
 function previewImage(input) {
     if (input.files && input.files[0]) {
@@ -189,249 +188,142 @@ function clearSelectedImage() {
                 <!-- display post and can comment also  .... -->
 
                     @foreach($posts as $post)
-                    <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
 
-                        <!-- Header -->
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <img
-                                    class="w-11 h-11 rounded-xl object-cover"
-                                    src="https://i.pravatar.cc/150?u={{ $post->id }}"
-                                    alt="{{ $post->description }}">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <img
+                        class="w-11 h-11 rounded-xl object-cover"
+                        src="https://i.pravatar.cc/150?u={{ $post->id }}"
+                        alt="{{ $post->content }}">
 
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
-                                        {{ $post->description }}
-                                    </h4>
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
+                            {{ $post->content }}
+                        </h4>
 
-                                    <p class="text-xs text-slate-400 line-clamp-1">
-                                        Post Author
-                                    </p>
+                        <p class="text-xs text-slate-400 line-clamp-1">
+                            Post Author
+                        </p>
 
-                                    <p class="text-[11px] text-slate-400 mt-0.5">
-                                        {{ $post->created_at->diffForHumans() }}
-                                    </p>
-                                </div>
+                        <p class="text-[11px] text-slate-400 mt-0.5">
+                            {{ $post->created_at->diffForHumans() }}
+                        </p>
+                    </div>
+                </div>
+
+                @if(Auth::user() && (Auth::user()->can('update', $post) || Auth::user()->can('delete', $post)))
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" type="button" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-50 focus:outline-none">
+                            :
+                        </button>
+
+                        <div 
+                            x-show="open"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-1 w-40 bg-white border border-slate-200 shadow-xl rounded-xl z-50 overflow-hidden"
+                            style="display: none;"
+                        >
+                            <div class="py-1">
+                                @can('update', $post)
+                                    <a href="{{ route('posts.edit', $post) }}" class="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                                        <svg class="w-4 h-4 mr-2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        Edit Post
+                                    </a>
+                                @endcan
+
+                                @can('delete', $post)
+                                    <form action="{{ route('posts.destroy', $post) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
+                                            <svg class="w-4 h-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            Delete Post
+                                        </button>
+                                    </form>
+                                @endcan
                             </div>
-
-                            <button class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-50">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                            </button>
                         </div>
-
-                        <!-- Content -->
-                        <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                            <p>
-                                {!! nl2br(e($post->description)) !!}
-                            </p>
-
-                            @if($post->image)
-                                <div class="pt-2">
-                                    <img
-                                        class="w-full h-64 object-cover rounded-xl border border-slate-100 shadow-inner"
-                                        src="{{ asset('storage/' . $post->image) }}"
-                                        alt="Post Image">
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Footer -->
-                        <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-
-                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
-                                </svg>
-                                <span>0</span>
-                            </button>
-                            <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
-                                @csrf
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-
-                                <span>    {{ $post->comments_count }}</span>
-                                <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                                    Comments
-                                </button>
-                            </form>
-
-                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
-                                </svg>
-                                <span>Share</span>
-                            </button>
-
-                            <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                </svg>
-                                <span>Save</span>
-                            </button>
-
-                        </div>
-
                     </div>
-                    @endforeach
+                @else
+                    <button type="button" class="p-2 text-slate-500">
+                        <svg xmlns="http://w3.org" viewBox="0 0 100 100" width="30" height="30">
+                        <!-- Point supérieur -->
+                        <circle cx="50" cy="40" r="5" fill="currentColor" />
+                        <!-- Point inférieur -->
+                        <circle cx="50" cy="70" r="5" fill="currentColor" />
+                        </svg>
+                    </button>
+                @endif
+            </div>
+
+            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
+                <p>
+                    {!! nl2br(e($post->content)) !!}
+                </p>
+               @if($post->image)
+                    <img
+                        src="{{ str_starts_with($post->image, 'http')
+                            ? $post->image
+                            : asset('storage/' . $post->image) }}"
+                        alt="Post image"
+                        class="w-full h-64 object-cover rounded-xl"
+                    >
+                @endif
+            </div>
+
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+
+                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
+                    </svg>
+                    <span>0</span>
+                </button>
                 
-                    <!-- /////////////////////////////////////////////////// -->
+                <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
+                    @csrf
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
 
+                    <span>    {{ $post->comments_count }}</span>
+                    <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+                        Comments
+                    </button>
+                </form>
 
+                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
+                    </svg>
+                    <span>Share</span>
+                </button>
 
+                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                    <span>Save</span>
+                </button>
 
-
-
-     
-                    <!-- <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md"> 
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Thomas">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">Thomas Dubois</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">Principal Software Engineer @ Stripe</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Il y a 2 heures • Modifié</p>
-                    </div>
-                </div>
-                <button class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-50"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg></button>
             </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>Absolument ravi de partager que nos équipes viennent de stabiliser l'architecture de notre nouveau moteur de paiement mondial core-banking. 🚀</p>
-                <p>En repensant l'expérience de routage intelligent via une stack découplée, nous avons réduit la latence de traitement des transactions de près de 35% à l'échelle globale. Bravo à toute l'équipe produit pour ce sprint monumental.</p>
-                <div class="pt-2">
-                    <img class="w-full h-64 object-cover rounded-xl border border-slate-100 shadow-inner" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Post Analytics Chart">
-                </div>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/></svg> <span>142</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span>28 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
+
         </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" alt="Sarah">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900">Sarah Alami</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">VP of Design @ Linear</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Il y a 5 heures</p>
-                    </div>
-                </div>
-            </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p class="font-semibold text-slate-900">Le minimalisme n’est pas l’absence de fonctionnalités, c’est la clarté de l'intention.</p>
-                <p>Trop d'applications SaaS souffrent de sur-ingénierie visuelle. Épurer l'interface, unifier les échelles de espacement (spacing scales) et valoriser le vide permet de doper la rétention utilisateur de façon spectaculaire. Qu’en pensez-vous ?</p>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4 text-brand-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 10.333z"/></svg> <span class="text-brand-500">312</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span>89 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Karim">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900">Karim Benali</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">Co-Founder & CTO @ MedFlow</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Hier</p>
-                    </div>
-                </div>
-            </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>12 mois après le lancement en production de notre plateforme SaaS pour cliniques médicales, la leçon principale reste : **soignez la base de données avant l'UI**.</p>
-                <p>Une dette technique sur les indexations MySQL peut ruiner l'expérience utilisateur la plus soignée en introduisant des temps de réponse catastrophiques. Faites des refactorings réguliers de vos modèles d'architecture.</p>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/></svg> <span>56</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span class="text-brand-500">12 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Amandine">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900">Amandine Leroi</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">Head of Talent @ Vercel</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Il y a 3 jours</p>
-                    </div>
-                </div>
-            </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>Conseil pour les développeurs juniors en entretien technique : nous ne cherchons pas des encyclopédies vivantes capables de réciter toute la documentation par cœur.</p>
-                <p>Nous évaluons votre **méthodologie de résolution de problèmes** et votre communication lorsque vous faites face à un bloqueur. Sachez dire "Je ne sais pas, mais voici comment je chercherais l'information". C'est un énorme signal vert. 💚</p>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/></svg> <span>89</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span>45 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80" alt="Marc">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900">Marc-Antoine Durand</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">Product Manager @ EduSync</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Il y a 4 jours</p>
-                    </div>
-                </div>
-            </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>C'est officiel ! La mise à jour majeure d'**EduSync v2** (le système de gestion académique) est désormais déployée pour nos 50 établissements pilotes. 🎓</p>
-                <p>Au programme : refonte totale des flux d'authentification, architecture de session renforcée et une interface d'émargement en temps réel ultra intuitive construite main dans la main avec nos retours utilisateurs.</p>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/></svg> <span>210</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span>67 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <img class="w-11 h-11 rounded-xl object-cover" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" alt="Yasmine">
-                    <div>
-                        <h4 class="text-sm font-bold text-slate-900">Yasmine Tazi</h4>
-                        <p class="text-xs text-slate-400 line-clamp-1">Operations Director @ PharmaFEFO</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Il y a 1 semaine</p>
-                    </div>
-                </div>
-            </div>
-            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-                <p>Pourquoi l'application stricte de la règle **FEFO (First Expired, First Out)** est critique pour la supply chain pharmaceutique ?</p>
-                <p>En priorisant la sortie des stocks sur la date de péremption plutôt que sur la date d'entrée (FIFO), nous avons réduit de 18% les pertes sur les produits sensibles cette année. Un exemple parfait où l'optimisation algorithmique rencontre directement l'impact financier.</p>
-            </div>
-            <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/></svg> <span>94</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg> <span>19 Comments</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/></svg> <span>Partager</span></button>
-                <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg> <span>Enregistrer</span></button>
-            </div>
-         </div> -->
-
+        @endforeach
     </section>
 
     <aside class="lg:col-span-3 space-y-6 lg:sticky lg:top-24 hidden lg:block">

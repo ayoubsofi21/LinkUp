@@ -14,22 +14,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/feed', [PostController::class, 'index'])->name('feed');
 
     Route::post('/comments/create/{id}', [CommentController::class, 'create'])->name('comments.create');
     Route::post('/comments/store/{id}', [CommentController::class, 'store'])->name('comments.store');
+  
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+
+
+    // do some post
+      Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
 });
 
 require __DIR__.'/auth.php';

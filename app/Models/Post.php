@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model {
     use HasFactory;
-    protected $fillable = ['user_id', 'content'];
+    protected $fillable = ['user_id', 'content',"image"];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

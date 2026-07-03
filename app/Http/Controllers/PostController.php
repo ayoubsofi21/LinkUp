@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Http\Requests\StorePostRequest;
 class PostController extends Controller
 {
     /**
@@ -17,16 +18,24 @@ class PostController extends Controller
              ->get();
         return view("pages.feed",compact("posts"));
     }
-     public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $validate=$request->validate(
-            ["description"=>'required|min:5']
-        );
-        Post::create($validate) ;       
-        return redirect()->back()->with('success',"post created with successfull");
+        $filename = null;
+
+        if ($request->hasFile('image')) {
+            $filename = $request->file('image')->store('posts', 'public');
+        }
+
+        Post::create([
+            'user_id' => auth()->id(),
+            'content' => $request->validated()['content'],
+            'image' => $filename,
+        ]);
+
+        return redirect()
+            ->route('feed')
+            ->with('success', 'Post published successfully!');
     }
-
-
     /**
      * Show the form for creating a new resource.
      */

@@ -20,8 +20,8 @@ class PostFactory extends Factory
     {
             return [
                 'user_id' => User::factory(),
-
-                'description' => fake()->paragraph(3),
+                'content' => fake()->paragraph(3),
+                'image' => 'https://picsum.photos/800/600?random=' . fake()->numberBetween(1, 1000),
 
         ];
 
