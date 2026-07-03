@@ -95,31 +95,7 @@
                         Home
                     </span>
                 </a>
-                <!-- Home / Feed -->
-                <a
-                    href="{{ url('/') }}"
-                    class="flex flex-col items-center justify-center
-                            w-16 h-14
-                            text-slate-500 dark:text-slate-400
-                            hover:text-brand-500 dark:hover:text-brand-400
-                            hover:bg-slate-50 dark:hover:bg-slate-800/50
-                            rounded-xl
-                            transition-all duration-200">
-                    <svg
-                        class="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M5.121 17.804A9 9 0 1118.879 6.196A9 9 0 015.121 17.804z"/>
-                    </svg>
-                    <span class="hidden xl:block text-[10px] mt-1 font-medium">
-                        Feed
-                    </span>
-                </a>
+                
                 <!-- Network -->
                 <a
                     href="#"
@@ -394,12 +370,6 @@
                 class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-brand-500 bg-brand-50/60 dark:bg-brand-500/10 transition">
                 <span>🏠</span>
                 <span>Dashboard</span>
-            </a>
-            <a
-                href="{{ url('/') }}"
-                class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                <span>📰</span>
-                <span>Feed</span>
             </a>
             <a
                 href="#"
