@@ -11,31 +11,18 @@
             <!-- Left Side -->
             <div class="flex items-center flex-1 max-w-md gap-4">
                 <!-- Logo -->
-                <a href="{{ route('feed') }}" class="flex items-center gap-3 group">
-                    <!-- Logo Icon Container -->
-               <div
-                    class="flex h-11 w-11 items-center justify-center
-                        rounded-2xl overflow-hidden
-                        shadow-lg shadow-brand-500/20
-                        transition-all duration-300
-                        group-hover:scale-105">
-
-                    <img
-                        src="{{ asset('images/linkup-logo.png') }}"
-                        alt="LinkUp Logo"
-                        class="w-full h-full object-cover">
-                </div>
-                    <!-- Brand Name -->
-                    <div class="hidden sm:flex flex-col leading-none">
-                        <span
-                            class="text-xl font-extrabold tracking-tight
-                                text-slate-900 dark:text-white
-                                transition-colors duration-200
-                                group-hover:text-brand-500 dark:group-hover:text-brand-400">
-                            LinkUp
-                        </span>
-                    </div>
-                </a>
+                   <a href="{{ url('/') }}" class="flex items-center gap-2.5 flex-shrink-0 group">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm"
+                            style="background: linear-gradient(135deg, #2563EB, #4F46E5); box-shadow: 0 4px 12px rgba(37,99,235,0.35); transition: transform 0.2s;"
+                            onmouseover="this.style.transform='scale(1.1) rotate(-3deg)'"
+                            onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-lg tracking-tight text-slate-900 dark:text-white">LinkUp</span>
+                    </a>
                 <!-- Search -->
                 <div class="relative hidden md:block w-full max-w-md">
                     <!-- Search Icon -->
