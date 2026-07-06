@@ -350,7 +350,60 @@ function clearSelectedImage() {
                 x-transition
                 class="mt-5 space-y-4"
             >
+                 <!-- Comment Form -->
+               <form action="{{ route('comments.store', $post->id) }}"
+                    method="POST"
+                    class="mt-4"
+                >
+                    @csrf
+                    <div class="flex items-end gap-3">
+                     <!-- Comment Input -->
+                        <div class="flex-1 flex items-end bg-slate-100 rounded-2xl border border-slate-200 px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500 transition ">
 
+                            <textarea
+                                name="comment"
+                                rows="1"
+                                placeholder="Add a comment..."
+                                class="w-full bg-transparent resize-none border-none focus:ring-0  placeholder:text-slate-400 text-slate-700"
+                            >{{ old('comment') }}</textarea>
+
+                            <!-- Submit Button -->
+                            <button
+                                type="submit"
+                                class="ml-2 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M22 2L11 13"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M22 2L15 22l-4-9-9-4 20-7z"
+                                    />
+                                </svg>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    @error('comment')
+                        <p class="mt-2 text-sm text-red-500">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                </form>
                 <!-- Existing Comments -->
                 @forelse($post->comments as $comment)
 
@@ -359,7 +412,7 @@ function clearSelectedImage() {
                         <div class="flex justify-between">
 
                             <div>
-                                <h5 class="font-semibold text-sm">
+                                <h5 class="font-semibold text-slate-700">
                                     {{ $comment->user->name }}
                                 </h5>
 
@@ -403,36 +456,7 @@ function clearSelectedImage() {
                     </p>
 
                 @endforelse
-
-                <!-- Comment Form -->
-                <form
-                    action="{{ route('comments.store', $post->id) }}"
-                    method="POST"
-                    class="space-y-3"
-                >
-                    @csrf
-
-                    <textarea
-                        name="comment"
-                        rows="3"
-                        class="w-full rounded-xl border-gray-300 focus:ring focus:ring-blue-200"
-                        placeholder="Write a comment..."
-                    >{{ old('comment') }}</textarea>
-
-                    @error('comment')
-                        <p class="text-red-500 text-sm">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                    <button
-                        type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
-                    >
-                        Post Comment
-                    </button>
-
-                </form>
+                <!-- sdjgh -->
 
             </div>
         </div>
