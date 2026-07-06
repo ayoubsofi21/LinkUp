@@ -19,7 +19,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feed', [PostController::class, 'index'])->name('feed');
 
     Route::post('/comments/create/{id}', [CommentController::class, 'create'])->name('comments.create');
-    Route::post('/comments/store/{id}', [CommentController::class, 'store'])->name('comments.store');
+      Route::post('/comments/store/{id}', [CommentController::class, 'store'])
+        ->name('comments.store');
+
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
+        ->name('comments.destroy');
   
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

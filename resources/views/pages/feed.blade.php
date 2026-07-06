@@ -276,50 +276,169 @@ function clearSelectedImage() {
             >
         @endif
     </div>
+    
+        <!-- delete  -->
+         <div
+        x-data="{ showComments: false }"
+        class="pt-4 mt-4  border-slate-100"
+    >
 
-    <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-
-        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+             <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
             </svg>
             <span>0</span>
         </button>
-        
-        <form action="{{ route('comments.create',$post->id) }}" method="post" class="flex gap-0 ">
-            @csrf
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-            </svg>
+            <!-- Comment Button -->
+            <button
+                type="button"
+                @click="showComments = !showComments"
+                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+            >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"
+                    />
+                </svg>
 
-            <span>    {{ $post->comments_count }}</span>
-            <button type="submit" class="h-4 w-4 flex items-center hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-                Comments
+                <span>Comment ({{ $post->comments->count() }})</span>
             </button>
-        </form>
 
-        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"/>
-            </svg>
-            <span>Share</span>
-        </button>
+            <!-- Share -->
+            <button
+                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+            >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"
+                    />
+                </svg>
 
-        <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-            </svg>
-            <span>Save</span>
-        </button>
+                <span>Share</span>
+            </button>
+
+            <!-- Save -->
+            <button
+                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+            >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                    />
+                </svg>
+
+                <span>Save</span>
+            </button>
+
+        </div>
+            <!-- delete -->
+            <!-- Comments Section -->
+            <div
+                x-show="showComments"
+                x-transition
+                class="mt-5 space-y-4"
+            >
+
+                <!-- Existing Comments -->
+                @forelse($post->comments as $comment)
+
+                    <div class="border rounded-xl p-3 bg-slate-50">
+
+                        <div class="flex justify-between">
+
+                            <div>
+                                <h5 class="font-semibold text-sm">
+                                    {{ $comment->user->name }}
+                                </h5>
+
+                                <p class="text-sm text-slate-700 mt-1">
+                                    {{ $comment->comment }}
+                                </p>
+
+                                <small class="text-slate-400">
+                                    {{ $comment->created_at->diffForHumans() }}
+                                </small>
+                            </div>
+
+                            @if(auth()->id() == $comment->user_id)
+
+                                <form
+                                    action="{{ route('comments.destroy', $comment->id) }}"
+                                    method="POST"
+                                >
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-red-500 text-xs hover:text-red-700"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <p class="text-sm text-slate-400">
+                        No comments yet.
+                    </p>
+
+                @endforelse
+
+                <!-- Comment Form -->
+                <form
+                    action="{{ route('comments.store', $post->id) }}"
+                    method="POST"
+                    class="space-y-3"
+                >
+                    @csrf
+
+                    <textarea
+                        name="comment"
+                        rows="3"
+                        class="w-full rounded-xl border-gray-300 focus:ring focus:ring-blue-200"
+                        placeholder="Write a comment..."
+                    >{{ old('comment') }}</textarea>
+
+                    @error('comment')
+                        <p class="text-red-500 text-sm">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                    >
+                        Post Comment
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
 
     </div>
-
-</div>
-@endforeach
+    @endforeach
     </section>
 
     <aside class="lg:col-span-3 space-y-6 lg:sticky lg:top-24 hidden lg:block">
