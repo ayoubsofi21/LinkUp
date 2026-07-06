@@ -22,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
       Route::post('/comments/store/{id}', [CommentController::class, 'store'])
         ->name('comments.store');
 
-    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
   
 

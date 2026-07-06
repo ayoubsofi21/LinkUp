@@ -34,20 +34,20 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-        public function store(Request $request, $id)
-            {
-            $validated = $request->validate([
-                'comment' => 'required|string|max:1000',
-            ]);
+    public function store(StoreCommentRequest $request, $id)
+        {
+            $validated = $request->validated();
+
             $post = Post::findOrFail($id);
-            $post->comments()->create([
-                'user_id' => auth()->id(),
+
+            Comment::create([
                 'comment' => $validated['comment'],
+                'post_id' => $post->id,
+                'user_id' => auth()->id(),
             ]);
 
-            return redirect()->route('feed')
-                ->with('success', 'Comment added successfully');
-            }
+            return redirect('/feed')->with('success', 'Comment added successfully');
+        }
 
     /**
      * Display the specified resource.
@@ -78,6 +78,10 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        if($comment->user_id !=auth()->id()){
+            abort('403');
+        }
+        $comment->delete();
+        return redirect()->route('feed')->with('success',"deleted with successfull");
     }
 }
