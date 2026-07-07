@@ -22,6 +22,7 @@ class PostController extends Controller
     }
     public function store(StorePostRequest $request)
     {
+
         $filename = null;
 
         if ($request->hasFile('image')) {

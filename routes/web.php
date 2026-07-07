@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -28,6 +29,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/posts/like/{id}', [LikeController::class, 'toggle'])
         ->name('posts.like');
+
+    Route::get('/users/{user}', [ProfileController::class, 'show'])
+    ->name('profile.show');
+
+
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+    public function show(User $user)
+    {
+        $posts = $user->posts()
+            ->latest()
+            ->get();
+
+        return view('profile.show', compact('user', 'posts'));
+    }
     /**
      * Display the user's profile form.
      */
