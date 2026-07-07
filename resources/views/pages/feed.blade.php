@@ -285,12 +285,12 @@ function clearSelectedImage() {
 
         <!-- Action Buttons -->
         <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
+            
             <form action="{{ route('posts.like', $post->id) }}" method="POST">
                 @csrf
                 <button
-                    class="flex items-center gap-2 hover:text-blue-600 transition"
+                    class="flex items-center gap-2 transition py-1.5 px-3 rounded-lg hover:bg-blue-50 {{ $post->likes->contains(auth()->id()) ? 'text-blue-600' : 'hover:text-blue-600' }}"
                 >
-                
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-5 h-5"
@@ -302,64 +302,60 @@ function clearSelectedImage() {
                         stroke-linejoin="round"
                     >
                         <path d="M2 10h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z" />
-                        
                         <path d="M6 10c0-1 .5-2.5 1.5-4.5S9.5 2 11 2s1.5 1.5 1.5 3v4h6.5a2 2 0 0 1 2 2v1a2 2 0 0 1-.5 1.3 2 2 0 0 1 .1 2.2 2 2 0 0 1-.6 2.2 2 2 0 0 1-1.5 2.3H11c-2.5 0-4.5-2-5-4V10z" />
                     </svg>
 
                     <span>{{ $post->likes->count() }}</span>
-
                 </button>
-
             </form>
-            <!-- Comment Button -->
+
             <button
                 type="button"
                 @click="showComments = !showComments"
-                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+                class="flex items-center gap-2 hover:text-blue-600 transition-colors py-1.5 px-3 rounded-lg hover:bg-blue-50"
             >
                 <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
-            </svg>
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+                </svg>
 
                 <span>{{ $post->comments->count() }}</span>
             </button>
 
-            <!-- Share -->
             <button
-                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+                class="flex items-center gap-2 transition-colors py-1.5 px-3 rounded-lg hover:bg-blue-50 {{ $post->shares?->contains(auth()->id()) ? 'text-blue-600' : 'hover:text-blue-600' }}"
             >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 100-5.367 3 3 0 000 5.367zm0 9.334a3 3 0 100 5.367 3 3 0 000-5.367z"
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    class="w-5 h-5"
+                    fill="{{ $post->shares?->contains(auth()->id()) ? 'currentColor' : 'none' }}"
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                >
+                    <path 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        stroke-width="2" 
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
                     />
                 </svg>
 
                 <span>Share</span>
             </button>
 
-            <!-- Save -->
             <button
-                class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
+                class="flex items-center gap-2 hover:text-blue-600 transition-colors py-1.5 px-3 rounded-lg hover:bg-blue-50"
             >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                    />
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                 </svg>
 
                 <span>Save</span>
