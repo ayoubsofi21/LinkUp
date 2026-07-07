@@ -4,6 +4,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\TestPostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LikeController;
 
 
 Route::get('/', function () {
@@ -24,7 +25,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
-  
+
+    Route::post('/posts/like/{id}', [LikeController::class, 'toggle'])
+        ->name('posts.like');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

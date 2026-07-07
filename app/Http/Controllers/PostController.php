@@ -15,7 +15,7 @@ class PostController extends Controller
     public function index()
     {
         // $posts=Post::all();
-        $posts = Post::withCount('comments')
+        $posts = Post::withCount('comments','likes')
              ->latest()
              ->get();
         return view("pages.feed",compact("posts"));

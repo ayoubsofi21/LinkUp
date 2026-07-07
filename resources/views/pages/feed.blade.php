@@ -285,29 +285,52 @@ function clearSelectedImage() {
 
         <!-- Action Buttons -->
         <div class="flex items-center justify-between pt-4 mt-4 border-t border-slate-100 text-xs font-semibold text-slate-500">
-             <button class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"/>
-            </svg>
-            <span>0</span>
-        </button>
+            <form action="{{ route('posts.like', $post->id) }}" method="POST">
+                @csrf
+                <button
+                    class="flex items-center gap-2 hover:text-blue-600 transition"
+                >
+                
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="{{ $post->likes->contains(auth()->id()) ? 'currentColor' : 'none' }}"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M2 10h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z" />
+                        
+                        <path d="M6 10c0-1 .5-2.5 1.5-4.5S9.5 2 11 2s1.5 1.5 1.5 3v4h6.5a2 2 0 0 1 2 2v1a2 2 0 0 1-.5 1.3 2 2 0 0 1 .1 2.2 2 2 0 0 1-.6 2.2 2 2 0 0 1-1.5 2.3H11c-2.5 0-4.5-2-5-4V10z" />
+                    </svg>
+
+                    <span>{{ $post->likes->count() }}</span>
+
+                </button>
+
+            </form>
             <!-- Comment Button -->
             <button
                 type="button"
                 @click="showComments = !showComments"
                 class="flex items-center gap-2 hover:text-brand-500 transition-colors py-1.5 px-3 rounded-lg hover:bg-brand-50/50"
             >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M14 10h4.757a2.243 2.243 0 012.243 2.243v3.515a2.243 2.243 0 01-2.243 2.243H14M4 10h4.757a2.243 2.243 0 002.243-2.243V4.243A2.243 2.243 0 008.757 2H4v8z"
-                    />
-                </svg>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+            </svg>
 
-                <span>Comment ({{ $post->comments->count() }})</span>
+                <span>{{ $post->comments->count() }}</span>
             </button>
 
             <!-- Share -->

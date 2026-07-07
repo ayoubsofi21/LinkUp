@@ -46,7 +46,7 @@ class CommentController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            return redirect('/feed')->with('success', 'Comment added successfully');
+            return back()->with('success', 'Comment added successfully');
         }
 
     /**
@@ -82,6 +82,6 @@ class CommentController extends Controller
             abort('403');
         }
         $comment->delete();
-        return redirect()->route('feed')->with('success',"deleted with successfull");
+        return back()->with('success',"deleted with successfull");
     }
 }
