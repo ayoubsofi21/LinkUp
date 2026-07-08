@@ -202,12 +202,8 @@ function clearSelectedImage() {
 
                         <div>
                             <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
-                                {{ $post->content }}
+                                {{ $post->user->name }}
                             </h4>
-
-                            <p class="text-xs text-slate-400 line-clamp-1">
-                                Post Author
-                            </p>
 
                             <p class="text-[11px] text-slate-400 mt-0.5">
                                 {{ $post->created_at->diffForHumans() }}
