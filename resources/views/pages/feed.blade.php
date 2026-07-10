@@ -191,12 +191,6 @@ function clearSelectedImage() {
                 <!-- display post and can comment also  .... -->
 
         @foreach($posts as $post)
-            @if($post->original_post_id)
-                <p>
-                    <strong>{{ $post->user->name }}</strong>
-                    a partagé cette publication.
-                </p>
-            @endif
             <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
 
                 <div class="flex items-center justify-between mb-4">
@@ -212,17 +206,22 @@ function clearSelectedImage() {
 
                             <div>
                                 <div class="flex items-center gap-2">
-                                    @if($post->user->id === auth()->id())
-                                             <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
-                                            <p>
-                                                <strong>{{ $post->user->name }}</strong>
-                                                a partagé cette publication.
-                                            </p>
-                                        </span>
+                                   @if($post->original_post_id)
+                                    <div>
+                                         <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                                            <strong>{{ $post->user->name }}</strong>
+                                            a partagé cette publication.<br/>
+                                            
+                                        </span>                                        
+                                        <strong class="text-gray-500">{{$post->originalPost->user->name}}</strong>
+                                    </div>
+                                       
                                     @else
+
                                         <h4 class="font-semibold text-slate-800 hover:text-blue-600 transition cursor-pointer">
                                             {{ $post->user->name }}
                                         </h4>
+
                                     @endif
 
                                 </div>
