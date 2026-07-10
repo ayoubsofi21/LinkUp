@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/users/{user}', [ProfileController::class, 'show'])
     ->name('profile.show');
+    Route::post('/posts/repost/{post}',[PostController::class,'repost'])->name('posts.repost');
 
 
 

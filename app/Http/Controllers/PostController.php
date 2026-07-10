@@ -119,4 +119,16 @@ public function destroy(string $id)
     // 4. Retourner à la liste
     return redirect()->route('feed');
 }
+
+public function Repost(Post $post){
+    // $post=Post::findOrFail($id);
+    $post->create([
+        'user_id'=>auth()->id(),
+        'content'=>$post->content,
+        'image'=>$post->image,
+        'origin_post_id'=>$post->id
+    ]);
+    return back();
+
+}
 }
