@@ -22,7 +22,7 @@
                 
                 <div class="pt-12">
                     <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ auth()->user()->name }}</h2>
-                    <p class="text-xs text-brand-500 font-medium mt-0.5">Senior Frontend Engineer</p>
+                    <p class="text-xs text-green-500 font-medium mt-0.5">Senior Frontend Engineer</p>
                     <p class="text-xs text-slate-400 mt-2">Spécialisé en écosystèmes UI Modernes (Tailwind, React, Blade)</p>
                 </div>
                 
@@ -194,21 +194,62 @@ function clearSelectedImage() {
             <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm mb-4">
 
                 <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <img
-                            class="w-11 h-11 rounded-xl object-cover"
-                            src="https://i.pravatar.cc/150?u={{ $post->id }}"
-                            alt="{{ $post->content }}">
+                   <div class="flex items-center justify-between">
 
-                        <div>
-                            <h4 class="text-sm font-bold text-slate-900 hover:text-brand-500 cursor-pointer transition-colors">
-                                {{ $post->user->name }}
-                            </h4>
+                        <!-- User Info -->
+                        <div class="flex items-center gap-3">
 
-                            <p class="text-[11px] text-slate-400 mt-0.5">
-                                {{ $post->created_at->diffForHumans() }}
-                            </p>
+                            <img
+                                class="w-12 h-12 rounded-full object-cover ring-2 ring-slate-100"
+                                src="https://i.pravatar.cc/150?u={{ $post->user->id }}"
+                                alt="{{ $post->user->name }}">
+
+                            <div>
+                                <div class="flex items-center gap-2">
+
+                                    <h4 class="font-semibold text-slate-800 hover:text-blue-600 transition cursor-pointer">
+                                        {{ $post->user->name }}
+                                    </h4>
+
+                                    @if($post->user->id === auth()->id())
+                                        <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                                            You
+                                        </span>
+                                    @endif
+
+                                </div>
+
+                                <p class="text-xs text-slate-500">
+                                    {{ $post->created_at->diffForHumans() }}
+                                </p>
+                            </div>
+
                         </div>
+
+                        @if($post->user->id !== auth()->id())
+
+                            @php
+                                $following = auth()->user()->following->contains($post->user->id);
+                            @endphp
+
+                            <form action="{{ route('users.follow', $post->user) }}" method="POST" >
+                                @csrf
+
+                                <button
+                                    class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 mx-4
+                                    {{ $following
+                                        ? 'border border-slate-300 bg-white text-slate-700 hover:bg-red-50 hover:border-red-300 hover:text-red-600'
+                                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                    }}">
+
+                                    {{ $following ? '✓ Following' : '+ Follow' }}
+
+                                </button>
+
+                            </form>
+
+                        @endif
+
                     </div>
 
                     @if(Auth::user() && (Auth::user()->can('update', $post) || Auth::user()->can('delete', $post)))

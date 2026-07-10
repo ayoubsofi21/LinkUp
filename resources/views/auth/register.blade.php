@@ -489,7 +489,7 @@
                 {{-- ══════════════════════════════════════════════
                      REGISTRATION FORM — all Breeze fields intact
                      ══════════════════════════════════════════════ --}}
-                <form method="POST" action="{{ route('register') }}"
+                <form method="POST" action="{{route('register')}}"
                       x-data="registerForm()"
                       @submit="submitting = true"
                       class="space-y-4">
@@ -504,7 +504,7 @@
                             value="{{ old('name') }}"
                             required
                             autocomplete="name"
-                            placeholder=" "
+                            placeholder=""
                             class="input-field {{ $errors->has('name') ? 'has-error' : '' }}"
                         >
                         <label for="name" class="input-label">Full Name</label>

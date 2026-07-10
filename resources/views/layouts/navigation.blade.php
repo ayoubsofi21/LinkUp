@@ -85,7 +85,7 @@
                 
                 <!-- Network -->
                 <a
-                    href="#"
+                    href="{{ route('network')}}"
                     class="flex flex-col items-center justify-center w-16 h-14 text-slate-500 dark:text-slate-400 hover:text-brand-500 dark:hover:text-brand-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition duration-200">
                     <svg
                         class="h-5 w-5"
