@@ -5,6 +5,7 @@ use App\Http\Controllers\TestPostController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\NetworkController;
 
 
 
@@ -29,6 +30,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/posts/like/{id}', [LikeController::class, 'toggle'])
         ->name('posts.like');
+    Route::get('/network', [NetworkController::class, 'index'])
+        ->name('network');
+    Route::post('/users/follow/{user}', [NetworkController::class, 'toggleFollow'])
+    ->name('users.follow');
 
     Route::get('/users/{user}', [ProfileController::class, 'show'])
     ->name('profile.show');
